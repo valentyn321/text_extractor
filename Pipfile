@@ -11,6 +11,10 @@ jinja2 = "*"
 pytest = "*"
 requests = "*"
 pre-commit = "*"
+pillow = "*"
+aiofiles = "*"
+python-multipart = "*"
+python-dotenv = "*"
 
 [dev-packages]
 pycodestyle = "*"
