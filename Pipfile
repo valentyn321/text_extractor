@@ -4,8 +4,20 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+fastapi = "*"
+gunicorn = "*"
+uvicorn = "*"
+jinja2 = "*"
+pytest = "*"
+requests = "*"
+pre-commit = "*"
 
 [dev-packages]
+pycodestyle = "*"
+black = "*"
 
 [requires]
 python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true
