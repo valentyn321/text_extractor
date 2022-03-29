@@ -1,13 +1,31 @@
 import io
 import shutil
 import time
-from click import echo
 
 from fastapi.testclient import TestClient
 from app.main import UPLOAD_DIR, app, BASE_DIR
 from PIL import Image, ImageChops
 
 client = TestClient(app)
+
+
+def test_prediction():
+    path = BASE_DIR / "images"
+    for img in path.glob("*"):
+        try:
+            image = Image.open(img)
+        except:
+            image = None
+
+        try:
+            response = client.post("/", files={"file": open(img, "rb")})
+            if image is None:
+                assert response.status_code == 400
+            else:
+                assert response.status_code == 200
+                assert len(response.json()) == 2
+        except TypeError:
+            pass
 
 
 def test_img_echo():
@@ -32,5 +50,5 @@ def test_img_echo():
         except TypeError:
             pass
 
-    time.sleep(3)
+    # time.sleep(3)
     shutil.rmtree(UPLOAD_DIR)

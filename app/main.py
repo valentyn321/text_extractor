@@ -1,6 +1,8 @@
 import pathlib
 import io
 import uuid
+import pytesseract
+
 from functools import lru_cache
 from fastapi import Depends, FastAPI, File, HTTPException, Request, UploadFile
 from fastapi.responses import HTMLResponse, FileResponse
@@ -27,6 +29,21 @@ def get_settings():
 
 app = FastAPI()
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
+
+
+@app.post("/")
+async def prediction_view(
+    file: UploadFile = File(...), settings: Settings = Depends(get_settings)
+):
+    bytes_str = io.BytesIO(await file.read())
+    try:
+        img = Image.open(bytes_str)
+    except:
+        raise HTTPException(detail="Invalid file format", status_code=400)
+
+    preds = pytesseract.image_to_string(img)
+    predictions = [x for x in preds.split("\n")]
+    return {"results": predictions, "original": preds}
 
 
 @app.post("/img-echo/", response_class=FileResponse)
